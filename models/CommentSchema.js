@@ -29,7 +29,7 @@ const commentSchema = new mongoose.Schema(
   }
 );
 
-reviewSchema.pre(/^find/, function (next) {
+commentSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'post'
   }).populate({

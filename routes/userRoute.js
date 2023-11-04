@@ -18,10 +18,8 @@ router.route('/updatePassword').patch(authController.updatePassword);
 router.route('/:id/follow').put(userController.follow);
 
 router.use(authController.restrictTo('admin'));
-router
-  .route('/')
-  .get(userController.getAllUsers)
-  .post(userController.createUser);
+router.route('/').get(userController.getAllUsers);
+
 router
   .route('/:id')
   .get(userController.getUser)
