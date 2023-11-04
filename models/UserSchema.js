@@ -35,6 +35,16 @@ const userSchema = new Schema(
       minleght: 8,
       select: false
     },
+    gender: {
+      type: String,
+      enum: ['Male', 'Female', 'Other']
+    },
+    phone: {
+      type: String
+    },
+    birthday: {
+      type: Date
+    },
     passwordConfirm: {
       type: String,
       required: [true, 'Please confirm your password'],
