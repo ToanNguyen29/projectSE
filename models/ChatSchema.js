@@ -6,7 +6,13 @@ const chatSchema = new Schema(
     chatName: { type: String, trim: true },
     isGroupChat: { type: Boolean, default: false },
     users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    latestMessage: { type: Schema.Types.ObjectId, ref: 'Message' }
+    latestMessage: { type: Schema.Types.ObjectId, ref: 'Message' },
+    admin: { type: Schema.Types.ObjectId, ref: 'User' },
+    active: {
+      type: Boolean,
+      default: true,
+      select: false
+    }
   },
   { timestamps: true }
 );

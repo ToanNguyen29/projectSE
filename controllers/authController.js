@@ -14,6 +14,8 @@ const createToken = (id) => {
 const createSendToken = (statusCode, user, res) => {
   const token = createToken(user._id);
 
+  console.log(process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000);
+
   const cookieOption = {
     expires: new Date(
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
@@ -58,6 +60,14 @@ exports.login = async (req, res, next) => {
 
   // 3. If everything is ok, send token to client
   createSendToken(201, user, res);
+};
+
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
+  });
+  res.status(200).json({ status: 'success' });
 };
 
 exports.protect = catchAsync(async (req, res, next) => {

@@ -60,8 +60,8 @@ exports.getOne = (Model, popOptions) =>
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
     let filter = {};
-    if (req.params.tourId) {
-      filter = { tour: req.params.tourId };
+    if (req.params.postId) {
+      filter = { post: req.params.postId };
     }
     const feature = new APIFeature(Model.find(filter), req.query)
       .filtering()

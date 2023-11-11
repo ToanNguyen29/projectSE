@@ -1,6 +1,8 @@
 const User = require('./../models/UserSchema');
 const catchAsync = require('./../utils/catchAsync');
 const appError = require('./../utils/appError');
+const fs = require('fs');
+const upload = multer({ dest: 'uploads/' });
 const factory = require('./handlerFactory');
 
 const filterData = (obj, ...allowFields) => {
@@ -30,7 +32,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   }
 
   // 2. Filtered out unwanted fields name that are not allow to be updated
-  const dataUpdate = filterData(req.body, 'name', 'email');
+  const dataUpdate = filterData(req.body, 'firstname', 'lastname', 'email');
 
   // 3. Update user document
   const updateUser = await User.findByIdAndUpdate(req.user.id, dataUpdate, {
@@ -84,6 +86,90 @@ exports.follow = catchAsync(async (req, res, next) => {
     }
   });
 });
+
+exports.getFollowing = catchAsync(async (req, res, next) => {
+  const following = await User.findById(req.params.id).populate('following');
+  res.status(200).json({
+    status: 'success',
+    data: {
+      following
+    }
+  });
+});
+
+exports.getFollowers = catchAsync(async (req, res, next) => {
+  const followers = await User.findById(req.params.id).populate('followers');
+  res.status(200).json({
+    status: 'success',
+    data: {
+      followers
+    }
+  });
+});
+
+exports.profilePic = catchAsync(
+  upload.single('croppedImage'),
+  async (req, res, next) => {
+    if (!req.file) {
+      return next(new appError('No file uploaded with request.', 400));
+    }
+
+    const filePath = `/uploads/images/${req.file.filename}.png`;
+    const tempPath = req.file.path;
+    const targetPath = path.join(__dirname, `../../${filePath}`);
+
+    fs.rename(tempPath, targetPath, async (error) => {
+      if (error != null) {
+        return next(new appError('Error', 400));
+      }
+
+      const user = await User.findByIdAndUpdate(
+        req.user._id,
+        { profilePic: filePath },
+        { new: true }
+      );
+
+      res.status(204).json({
+        status: 'success',
+        data: {
+          user
+        }
+      });
+    });
+  }
+);
+
+exports.coverPic = catchAsync(
+  upload.single('croppedImage'),
+  async (req, res, next) => {
+    if (!req.file) {
+      return next(new appError('No file uploaded with request.', 400));
+    }
+
+    const filePath = `/uploads/images/${req.file.filename}.png`;
+    const tempPath = req.file.path;
+    const targetPath = path.join(__dirname, `../../${filePath}`);
+
+    fs.rename(tempPath, targetPath, async (error) => {
+      if (error != null) {
+        return next(new appError('Error', 400));
+      }
+
+      const user = await User.findByIdAndUpdate(
+        req.user._id,
+        { coverPhoto: filePath },
+        { new: true }
+      );
+
+      res.status(204).json({
+        status: 'success',
+        data: {
+          user
+        }
+      });
+    });
+  }
+);
 
 exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);

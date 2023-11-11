@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const postRoute = require(`./routes/postRoute`);
 const userRoute = require(`./routes/userRoute`);
 const commentRoute = require('./routes/commentRoute');
+const chatRoute = require('./routes/chatRoute');
 const appError = require('./utils/appError');
 const errGlobalHandler = require('./controllers/errorController');
 
@@ -54,6 +55,7 @@ app.use(express.json({ limit: '10kb' })); // chuyển đổi req.body thành d�
 app.use('/api/v1/posts', postRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/comment', commentRoute);
+app.use('/api/v1/chat', chatRoute);
 
 app.all('*', (req, res, next) => {
   next(new appError(`Can't find ${req.originalUrl} in the server`, 404));
