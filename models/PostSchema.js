@@ -16,6 +16,7 @@ const PostSchema = new Schema(
       }
     ],
     likes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    replyTo: { type: Schema.Types.ObjectId, ref: 'Post' },
     retweetUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     retweetData: { type: Schema.Types.ObjectId, ref: 'Post' }
   },

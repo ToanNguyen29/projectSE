@@ -1,7 +1,7 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('./../controllers/authController');
-const imageMiddleware = require('./../controllers/imageMiddleware');
+const imageMiddleware = require('./../controllers/imageMiddleware.js');
 
 const router = express.Router();
 
@@ -21,12 +21,10 @@ router.route('/:id/following').get(userController.getFollowing);
 router.route('/:id/followers').get(userController.getFollowers);
 router
   .route('/profilePicture')
-  .imageMiddleware.array('profilePic', 1)
-  .patch(userController.profilePic);
+  .patch(imageMiddleware.single('profilePic'), userController.profilePic);
 router
   .route('/coverPicture')
-  .imageMiddleware.array('coverPhoto', 1)
-  .patch(userController.coverPic);
+  .patch(imageMiddleware.single('coverPhoto'), userController.coverPic);
 
 router.use(authController.restrictTo('admin'));
 router.route('/').get(userController.getAllUsers);

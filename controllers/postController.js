@@ -4,14 +4,23 @@ const catchAsync = require('../utils/catchAsync');
 const appError = require('../utils/appError');
 const factory = require('./handlerFactory');
 
-exports.setUser = catchAsync(async (req, res, next) => {
+exports.setUser = (req, res, next) => {
   if (!req.body.postedBy) {
     req.body.postedBy = req.user._id;
   }
   next();
-});
+};
+
+exports.setImage = (req, res, next) => {
+  if (req.files) {
+    const media = req.files.map((file) => ({ filename: file.filename }));
+    req.body.image = media;
+  }
+  next();
+};
+
 exports.getAllPosts = factory.getAll(Post);
-exports.getPost = factory.getOne(Post, { path: 'comments' });
+exports.getPost = factory.getOne(Post);
 exports.createPost = factory.createOne(Post);
 exports.updatePost = factory.updateOne(Post);
 exports.deletePost = factory.deleteOne(Post);

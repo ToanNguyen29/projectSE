@@ -20,10 +20,13 @@ exports.editReqBody = catchAsync(async (req, res, next) => {
   req.body.users = users;
   next();
 });
+
 exports.createChat = factory.createOne(Chat);
 
-exports.updateChat = catchAsync(async (req, res, next) => {});
+exports.updateChat = factory.updateOne(Chat);
 
-exports.checkAdmin = catchAsync(async (req, res, next) => {});
+exports.checkAdmin = async (req, res, next) => {
+  next();
+};
 
-exports.deleteChat = catchAsync(async (req, res, next) => {});
+exports.deleteChat = factory.deleteOne(Chat);

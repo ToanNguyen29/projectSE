@@ -2,12 +2,9 @@ const express = require('express');
 const router = express.Router();
 const postController = require(`./../controllers/postController.js`);
 const authController = require('../controllers/authController.js');
-const commentRouter = require('./commentRoute.js');
 const imageMiddleware = require('./../controllers/imageMiddleware.js');
 
 // router.param('id', tourController.checkID);
-
-router.use('/:postId/comments', commentRouter);
 
 router
   // authController.protect,
@@ -18,6 +15,7 @@ router
     authController.restrictTo('user'),
     imageMiddleware.array('image', 5),
     postController.setUser,
+    postController.setImage,
     postController.createPost
   );
 router

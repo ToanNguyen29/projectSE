@@ -9,12 +9,13 @@ const path = require('path');
 
 const postRoute = require(`./routes/postRoute`);
 const userRoute = require(`./routes/userRoute`);
-const commentRoute = require('./routes/commentRoute');
 const chatRoute = require('./routes/chatRoute');
 const appError = require('./utils/appError');
 const errGlobalHandler = require('./controllers/errorController');
 
 const app = express();
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 1) Middleware
 // Security http header
@@ -25,8 +26,6 @@ app.use(mongoSanitize()); // Nó sẽ xóa các ký tự như $
 
 // Data sanitization against XSS
 app.use(xss());
-
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Prevent parameter pollution
 app.use(
@@ -57,7 +56,6 @@ app.use(express.json({ limit: '10kb' })); // chuyển đổi req.body thành d�
 // ROUTE
 app.use('/api/v1/posts', postRoute);
 app.use('/api/v1/users', userRoute);
-app.use('/api/v1/comment', commentRoute);
 app.use('/api/v1/chat', chatRoute);
 
 app.all('*', (req, res, next) => {

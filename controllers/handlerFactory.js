@@ -33,14 +33,7 @@ exports.updateOne = (Model) =>
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    let newdoc;
-    if (req.files) {
-      const media = req.files.map((file) => ({ filename: file.filename }));
-      req.body.image = media;
-      newDoc = await Model.create(req.body);
-    } else {
-      newDoc = await Model.create(req.body);
-    }
+    const newDoc = await Model.create(req.body);
 
     res.status(200).json({
       status: 'success',
@@ -58,7 +51,7 @@ exports.getOne = (Model, popOptions) =>
     const doc = await query;
     // const tour = Tour.findOne({_id: req.params.id})
     if (!doc) {
-      return next(new appError('No tour found with that ID', 404));
+      return next(new appError('No document found with that ID', 404));
     }
     res.status(200).json({
       status: 'success',
@@ -68,17 +61,15 @@ exports.getOne = (Model, popOptions) =>
 
 exports.getAll = (Model) =>
   catchAsync(async (req, res, next) => {
-    let filter = {};
-    if (req.params.postId) {
-      filter = { post: req.params.postId };
-    }
-    const feature = new APIFeature(Model.find(filter), req.query)
+    const feature = new APIFeature(Model.find(), req.query)
       .filtering()
       .sorting()
       .limiting()
       .pagination();
 
-    const doc = await feature.query;
+    let doc = await feature.query;
+    if (popOptions) query = query.populate(popOptions);
+    doc.populate(popOptions);
 
     res.status(200).json({
       status: 'success',
