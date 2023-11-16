@@ -1,6 +1,7 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('./../controllers/authController');
+const imageMiddleware = require('./../controllers/imageMiddleware');
 
 const router = express.Router();
 
@@ -18,8 +19,14 @@ router.route('/updatePassword').patch(authController.updatePassword);
 router.route('/:id/follow').put(userController.follow);
 router.route('/:id/following').get(userController.getFollowing);
 router.route('/:id/followers').get(userController.getFollowers);
-router.route('/profilePicture').patch(userController.profilePic);
-router.route('/coverPicture').patch(userController.coverPic);
+router
+  .route('/profilePicture')
+  .imageMiddleware.array('profilePic', 1)
+  .patch(userController.profilePic);
+router
+  .route('/coverPicture')
+  .imageMiddleware.array('coverPhoto', 1)
+  .patch(userController.coverPic);
 
 router.use(authController.restrictTo('admin'));
 router.route('/').get(userController.getAllUsers);

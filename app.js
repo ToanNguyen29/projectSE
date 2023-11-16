@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const path = require('path');
 
 const postRoute = require(`./routes/postRoute`);
 const userRoute = require(`./routes/userRoute`);
@@ -24,6 +25,8 @@ app.use(mongoSanitize()); // Nó sẽ xóa các ký tự như $
 
 // Data sanitization against XSS
 app.use(xss());
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Prevent parameter pollution
 app.use(

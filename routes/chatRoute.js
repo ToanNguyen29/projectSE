@@ -13,7 +13,7 @@ router
 router
   .route('/:id')
   .get(chatController.getChat)
-  .patch(chatController.updateChat)
-  .delete(chatController.checkAdmin, chatController.deleteComment);
+  .patch(chatController.updateChat);
+// .delete(chatController.checkAdmin, chatController.deleteComment);
 
 module.exports = router;

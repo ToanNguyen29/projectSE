@@ -4,6 +4,12 @@ const catchAsync = require('../utils/catchAsync');
 const appError = require('../utils/appError');
 const factory = require('./handlerFactory');
 
+exports.setUser = catchAsync(async (req, res, next) => {
+  if (!req.body.postedBy) {
+    req.body.postedBy = req.user._id;
+  }
+  next();
+});
 exports.getAllPosts = factory.getAll(Post);
 exports.getPost = factory.getOne(Post, { path: 'comments' });
 exports.createPost = factory.createOne(Post);

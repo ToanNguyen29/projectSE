@@ -24,13 +24,13 @@ router
   .patch(
     authController.protect,
     authController.restrictTo('user'),
-    commentController.checkUser,
+    // commentController.checkUser,
     commentController.updateComment
   )
   .delete(
     authController.protect,
     authController.restrictTo('user'),
-    commentController.checkUser,
+    // commentController.checkUser,
     commentController.deleteComment
   );
 

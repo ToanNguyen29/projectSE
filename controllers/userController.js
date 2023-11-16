@@ -2,7 +2,7 @@ const User = require('./../models/UserSchema');
 const catchAsync = require('./../utils/catchAsync');
 const appError = require('./../utils/appError');
 const fs = require('fs');
-const upload = multer({ dest: 'uploads/' });
+// const upload = multer({ dest: 'uploads/' });
 const factory = require('./handlerFactory');
 
 const filterData = (obj, ...allowFields) => {
@@ -107,69 +107,43 @@ exports.getFollowers = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.profilePic = catchAsync(
-  upload.single('croppedImage'),
-  async (req, res, next) => {
-    if (!req.file) {
-      return next(new appError('No file uploaded with request.', 400));
-    }
-
-    const filePath = `/uploads/images/${req.file.filename}.png`;
-    const tempPath = req.file.path;
-    const targetPath = path.join(__dirname, `../../${filePath}`);
-
-    fs.rename(tempPath, targetPath, async (error) => {
-      if (error != null) {
-        return next(new appError('Error', 400));
-      }
-
-      const user = await User.findByIdAndUpdate(
-        req.user._id,
-        { profilePic: filePath },
-        { new: true }
-      );
-
-      res.status(204).json({
-        status: 'success',
-        data: {
-          user
-        }
-      });
-    });
+exports.profilePic = catchAsync(async (req, res, next) => {
+  if (!req.file) {
+    return next(new appError('No file uploaded with request.', 400));
   }
-);
 
-exports.coverPic = catchAsync(
-  upload.single('croppedImage'),
-  async (req, res, next) => {
-    if (!req.file) {
-      return next(new appError('No file uploaded with request.', 400));
+  const media = { filename: req.file.filename };
+  const updateProfilePic = await User.findByIdAndUpdate(
+    req.user._id,
+    { profilePic: media },
+    { new: true }
+  );
+  res.status(204).json({
+    status: 'success',
+    data: {
+      updateProfilePic
     }
+  });
+});
 
-    const filePath = `/uploads/images/${req.file.filename}.png`;
-    const tempPath = req.file.path;
-    const targetPath = path.join(__dirname, `../../${filePath}`);
-
-    fs.rename(tempPath, targetPath, async (error) => {
-      if (error != null) {
-        return next(new appError('Error', 400));
-      }
-
-      const user = await User.findByIdAndUpdate(
-        req.user._id,
-        { coverPhoto: filePath },
-        { new: true }
-      );
-
-      res.status(204).json({
-        status: 'success',
-        data: {
-          user
-        }
-      });
-    });
+exports.coverPic = catchAsync(async (req, res, next) => {
+  if (!req.file) {
+    return next(new appError('No file uploaded with request.', 400));
   }
-);
+
+  const media = { filename: req.file.filename };
+  const updateCoverPhoto = await User.findByIdAndUpdate(
+    req.user._id,
+    { coverPhoto: media },
+    { new: true }
+  );
+  res.status(204).json({
+    status: 'success',
+    data: {
+      updateCoverPhoto
+    }
+  });
+});
 
 exports.getAllUsers = factory.getAll(User);
 exports.getUser = factory.getOne(User);

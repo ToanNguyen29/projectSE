@@ -33,11 +33,20 @@ exports.updateOne = (Model) =>
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    const newDoc = await Model.create(req.body);
+    let newdoc;
+    if (req.files) {
+      const media = req.files.map((file) => ({ filename: file.filename }));
+      req.body.image = media;
+      newDoc = await Model.create(req.body);
+    } else {
+      newDoc = await Model.create(req.body);
+    }
 
     res.status(200).json({
       status: 'success',
-      data: { newDoc }
+      data: {
+        newdoc
+      }
     });
   });
 

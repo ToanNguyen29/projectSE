@@ -63,8 +63,18 @@ const userSchema = new Schema(
     DateChangePass: Date,
     passwordResetToken: String,
     passwordResetExpires: Date,
-    profilePic: { type: String },
-    coverPhoto: { type: String },
+    profilePic: {
+      filename: {
+        type: String,
+        require: true
+      }
+    },
+    coverPhoto: {
+      filename: {
+        type: String,
+        require: true
+      }
+    },
     likes: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
     retweets: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
     following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
@@ -96,8 +106,11 @@ userSchema.pre(/^find/, function (next) {
   next();
 });
 
-userSchema.methods.checkPass = function (candidatePass, userPass) {
-  return bcrypt.compare(candidatePass, userPass);
+userSchema.methods.checkPass = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
 };
 
 userSchema.methods.checkChangePassword = function (JWTTimeStampo) {
@@ -116,7 +129,7 @@ userSchema.methods.createPassResetToken = function () {
     .update(resetToken)
     .digest('hex');
 
-  this.passwordResetExpires = Date.now();
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
 };

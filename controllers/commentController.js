@@ -15,19 +15,19 @@ exports.setUserAndPost = catchAsync(async (req, res, next) => {
   }
 });
 
-exports.checkUser = catchAsync(async (req, res, next) => {
-  const comment = await Comment.findById(req.params.id);
+// exports.checkUser = catchAsync(async (req, res, next) => {
+//   const comment = await Comment.findById(req.params.id);
 
-  if (!comment) {
-    return next(new appError('Do not exist this comment', 404));
-  }
+//   if (!comment) {
+//     return next(new appError('Do not exist this comment', 404));
+//   }
 
-  if (comment.user !== req.user._id) {
-    return next(new appError('No permission handle this comment', 401));
-  }
+//   if (comment.user !== req.user._id) {
+//     return next(new appError('No permission handle this comment', 401));
+//   }
 
-  next();
-});
+//   next();
+// });
 
 exports.getComment = factory.getOne(Comment);
 exports.createComment = factory.createOne(Comment);
