@@ -38,7 +38,7 @@ exports.createOne = (Model) =>
     res.status(200).json({
       status: 'success',
       data: {
-        newdoc
+        newDoc
       }
     });
   });
@@ -59,17 +59,21 @@ exports.getOne = (Model, popOptions) =>
     });
   });
 
-exports.getAll = (Model) =>
+exports.getAll = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
-    const feature = new APIFeature(Model.find(), req.query)
+    let feature = new APIFeature(Model.find(), req.query)
       .filtering()
+      .searching()
       .sorting()
       .limiting()
       .pagination();
 
-    let doc = await feature.query;
-    if (popOptions) query = query.populate(popOptions);
-    doc.populate(popOptions);
+    let doc;
+    if (popOptions) {
+      doc = await feature.query.populate(popOptions);
+    } else {
+      doc = await feature.query;
+    }
 
     res.status(200).json({
       status: 'success',

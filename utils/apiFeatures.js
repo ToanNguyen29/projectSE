@@ -6,20 +6,45 @@ class APIFeature {
 
   filtering() {
     const queryObj = { ...this.queryString }; // tạo ra bản sao của req.query
-    const excludeFields = ['sort', 'fields', 'page', 'limit'];
+    const excludeFields = [
+      'sort',
+      'fields',
+      'page',
+      'limit',
+      'searchUser',
+      'searchPost'
+    ];
     excludeFields.forEach((el) => delete queryObj[el]); // xóa các key có tên là sort, filter, page
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-    // $gte trong mongodb là lớn hơn hoặc bằng nên ta cần thêm ký tự $ vào trước các query để dùng để truy vấn Mongodb
-    this.query = this.query.find(JSON.parse(queryStr));
+
+    this.query = this.query.find(queryObj);
+    return this;
+  }
+
+  searching() {
+    if (this.queryString.searchUser) {
+      const keyword = this.queryString.searchUser
+        ? {
+            $or: [
+              { name: { $regex: req.query.searchUser, $options: 'i' } },
+              { email: { $regex: req.query.searchUser, $options: 'i' } }
+            ]
+          }
+        : {};
+      this.query.find(keyword).find({ _id: { $ne: req.user._id } });
+    } else if (this.queryString.searchPost) {
+      const keyword = this.queryString.searchPost
+        ? {
+            $or: [{ content: { $regex: req.query.searchPost, $options: 'i' } }]
+          }
+        : {};
+      this.query.find(keyword).find({ postedBy: { $ne: req.user._id } });
+    }
     return this;
   }
 
   sorting() {
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.replace(/,/g, ' ');
-      // const sortBy = req.query.sort.split(',').join(' '); // cắt chuỗi khi gặp dấu , sau đó join chuỗi lại bằng dấu cách
-      // console.log(sortBy);
       this.query = this.query.sort(sortBy);
     } else {
       this.query = this.query.sort('-createdAt');
@@ -44,12 +69,6 @@ class APIFeature {
 
     this.query = this.query.skip(skip).limit(limit);
 
-    // if (req.query.page) {
-    //   const countTours = await Tour.countDocuments();
-    //   if (skip >= countTours) {
-    //     throw new Error('This page does not exist');
-    //   }
-    // }
     return this;
   }
 }
