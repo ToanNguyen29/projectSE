@@ -20,18 +20,8 @@ const PostSchema = new Schema(
     retweetUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     retweetData: { type: Schema.Types.ObjectId, ref: 'Post' }
   },
-  { timestamps: true },
-  {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true }
-  }
+  { timestamps: true }
 );
-
-PostSchema.virtual('comments', {
-  ref: 'Comment',
-  foreignField: 'post',
-  localField: '_id'
-});
 
 var Post = mongoose.model('Post', PostSchema);
 module.exports = Post;
