@@ -21,7 +21,7 @@ exports.getAllChat = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.createChat = catchAsync(async (req, res, next) => {
+exports.accessChat = catchAsync(async (req, res, next) => {
   const { userId } = req.body;
 
   if (!userId) {
@@ -117,7 +117,7 @@ exports.renameGroup = catchAsync(async (req, res, next) => {
   }
 });
 
-const removeFromGroup = catchAsync(async (req, res, next) => {
+exports.removeFromGroup = catchAsync(async (req, res, next) => {
   const { chatId, userId } = req.body;
 
   // check if the requester is admin
@@ -144,7 +144,7 @@ const removeFromGroup = catchAsync(async (req, res, next) => {
   }
 });
 
-const addToGroup = catchAsync(async (req, res) => {
+exports.addToGroup = catchAsync(async (req, res) => {
   const { chatId, userId } = req.body;
 
   // check if the requester is admin
