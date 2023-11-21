@@ -61,7 +61,7 @@ exports.getOne = (Model, popOptions) =>
 
 exports.getAll = (Model, popOptions) =>
   catchAsync(async (req, res, next) => {
-    let feature = new APIFeature(Model.find(), req.query)
+    let feature = new APIFeature(Model.find(), req.query, req.user)
       .filtering()
       .searching()
       .sorting()

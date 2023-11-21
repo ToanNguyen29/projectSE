@@ -113,6 +113,7 @@ exports.profilePic = catchAsync(async (req, res, next) => {
   }
 
   const media = { filename: req.file.filename };
+
   const updateProfilePic = await User.findByIdAndUpdate(
     req.user._id,
     { profilePic: media },
@@ -132,6 +133,7 @@ exports.coverPic = catchAsync(async (req, res, next) => {
   }
 
   const media = { filename: req.file.filename };
+
   const updateCoverPhoto = await User.findByIdAndUpdate(
     req.user._id,
     { coverPhoto: media },

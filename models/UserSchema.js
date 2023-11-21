@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const crypto = require('crypto');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const path = require('path');
 
 const Schema = mongoose.Schema;
 
@@ -66,13 +67,13 @@ const userSchema = new Schema(
     profilePic: {
       filename: {
         type: String,
-        default: '/1700042973733.png'
+        default: '/uploads/1700042973733.png'
       }
     },
     coverPhoto: {
       filename: {
         type: String,
-        default: '/1700042973733.png'
+        default: '/uploads/1700042973733.png'
       }
     },
     likes: [{ type: Schema.Types.ObjectId, ref: 'Post' }],

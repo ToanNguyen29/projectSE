@@ -1,7 +1,8 @@
 class APIFeature {
-  constructor(query, queryString) {
+  constructor(query, queryString, user) {
     this.query = query;
     this.queryString = queryString;
+    this.user = user;
   }
 
   filtering() {
@@ -25,19 +26,34 @@ class APIFeature {
       const keyword = this.queryString.searchUser
         ? {
             $or: [
-              { name: { $regex: req.query.searchUser, $options: 'i' } },
-              { email: { $regex: req.query.searchUser, $options: 'i' } }
+              {
+                firstName: {
+                  $regex: this.queryString.searchUser,
+                  $options: 'i'
+                }
+              },
+              {
+                lastName: { $regex: this.queryString.searchUser, $options: 'i' }
+              },
+              { email: { $regex: this.queryString.searchUser, $options: 'i' } }
             ]
           }
         : {};
-      this.query.find(keyword).find({ _id: { $ne: req.user._id } });
+
+      console.log(this.user._id);
+
+      this.query.find(keyword).find({ _id: { $ne: this.user._id } });
     } else if (this.queryString.searchPost) {
       const keyword = this.queryString.searchPost
         ? {
-            $or: [{ content: { $regex: req.query.searchPost, $options: 'i' } }]
+            $or: [
+              {
+                content: { $regex: this.queryString.searchPost, $options: 'i' }
+              }
+            ]
           }
         : {};
-      this.query.find(keyword).find({ postedBy: { $ne: req.user._id } });
+      this.query.find(keyword).find({ postedBy: { $ne: this.user._id } });
     }
     return this;
   }

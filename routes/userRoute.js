@@ -26,7 +26,7 @@ router
   .route('/coverPicture')
   .patch(imageMiddleware.single('coverPhoto'), userController.coverPic);
 
-router.use(authController.restrictTo('admin'));
+router.use(authController.restrictTo('user'));
 router.route('/').get(userController.getAllUsers);
 router
   .route('/:id')

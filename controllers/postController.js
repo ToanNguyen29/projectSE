@@ -19,7 +19,7 @@ exports.setImage = (req, res, next) => {
   next();
 };
 
-exports.getAllPosts = factory.getAll(Post);
+exports.getAllPosts = factory.getAll(Post, { path: 'postedBy' });
 exports.getPost = factory.getOne(Post);
 exports.createPost = factory.createOne(Post);
 exports.updatePost = factory.updateOne(Post);
