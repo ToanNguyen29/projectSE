@@ -3,6 +3,7 @@ const APIFeature = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
 const appError = require('../utils/appError');
 const factory = require('./handlerFactory');
+const User = require('./../models/UserSchema');
 
 exports.setUser = (req, res, next) => {
   if (!req.body.postedBy) {
@@ -49,6 +50,17 @@ exports.like = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: { post }
+  });
+});
+
+exports.checkLike = catchAsync(async (req, res, next) => {
+  const postId = req.params.id;
+  const userId = req.user._id;
+  const isLiked = req.user.likes && req.user.likes.includes(postId);
+
+  res.status(200).json({
+    status: 'success',
+    data: { isLiked }
   });
 });
 

@@ -34,6 +34,7 @@ router
 
 router.use(authController.protect, authController.restrictTo('user'));
 router.route('/:id/like').put(postController.like);
+router.route('/:id/like').get(postController.checkLike);
 router.route('/:id/retweet').put(postController.retweet);
 
 module.exports = router;
