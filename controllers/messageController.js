@@ -5,7 +5,12 @@ const catchAsync = require('../utils/catchAsync');
 const appError = require('../utils/appError');
 
 exports.allMessages = catchAsync(async (req, res, next) => {
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 10;
+  const skip = (page - 1) * limit;
   const messages = await Message.find({ chat: req.params.chatId })
+    .skip(skip)
+    .limit(limit)
     .populate('sender', 'name profilePic email')
     .populate('chat');
 
@@ -34,7 +39,7 @@ exports.sendMessage = catchAsync(async (req, res) => {
 
   let message = await Message.create(newMessage);
 
-  message = await message.populate('sender', 'name pic').execPopulate();
+  message = await message.populate('sender', 'name profilePic').execPopulate();
   message = await message.populate('chat').execPopulate();
   message = await User.populate(message, {
     path: 'chat.users',

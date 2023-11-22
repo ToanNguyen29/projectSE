@@ -4,11 +4,16 @@ const catchAsync = require('../utils/catchAsync');
 const appError = require('../utils/appError');
 
 exports.getAllChat = catchAsync(async (req, res, next) => {
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 10;
+  const skip = (page - 1) * limit;
   Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
     .populate('users')
     .populate('groupAdmin')
     .populate('latestMessage')
     .sort({ updatedAt: -1 })
+    .skip(skip)
+    .limit(limit)
     .then(async (results) => {
       results = await User.populate(results, {
         path: 'latestMessage.sender',
