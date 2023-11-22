@@ -4,10 +4,7 @@ const postController = require(`./../controllers/postController.js`);
 const authController = require('../controllers/authController.js');
 const imageMiddleware = require('./../controllers/imageMiddleware.js');
 
-// router.param('id', tourController.checkID);
-
 router
-  // authController.protect,
   .route('/')
   .get(postController.getAllPosts)
   .post(
@@ -18,23 +15,31 @@ router
     postController.setImage,
     postController.createPost
   );
+
+router.use(authController.protect, authController.restrictTo('user'));
 router
   .route('/:id')
   .get(postController.getPost)
   .patch(
-    authController.protect,
-    authController.restrictTo('user'),
+    postController.checkPostedBy,
+    imageMiddleware.array('image', 5),
+    postController.setImage,
     postController.updatePost
   )
-  .delete(
-    authController.protect,
-    authController.restrictTo('user'),
-    postController.deletePost
-  );
+  .delete(postController.checkPostedBy, postController.deletePost);
 
-router.use(authController.protect, authController.restrictTo('user'));
-router.route('/:id/like').put(postController.like);
-router.route('/:id/like').get(postController.checkLike);
+router
+  .route('/:id/like')
+  .put(postController.like)
+  .get(postController.checkLike);
+
 router.route('/:id/retweet').put(postController.retweet);
+router
+  .route('/:id/reply')
+  .put(
+    postController.setUser,
+    postController.setReplyData,
+    postController.createPost
+  );
 
 module.exports = router;

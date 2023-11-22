@@ -32,7 +32,15 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   }
 
   // 2. Filtered out unwanted fields name that are not allow to be updated
-  const dataUpdate = filterData(req.body, 'firstname', 'lastname', 'email');
+  const dataUpdate = filterData(
+    req.body,
+    'password',
+    'gender',
+    'email',
+    'profilePic',
+    'coverPic',
+    'role'
+  );
 
   // 3. Update user document
   const updateUser = await User.findByIdAndUpdate(req.user.id, dataUpdate, {
@@ -88,7 +96,14 @@ exports.follow = catchAsync(async (req, res, next) => {
 });
 
 exports.getFollowing = catchAsync(async (req, res, next) => {
-  const following = await User.findById(req.params.id).populate('following');
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 10;
+  const skip = (page - 1) * limit;
+  const following = await User.findById(req.params.id)
+    .skip(skip)
+    .limit(limit)
+    .populate('following');
+
   res.status(200).json({
     status: 'success',
     data: {
@@ -98,7 +113,14 @@ exports.getFollowing = catchAsync(async (req, res, next) => {
 });
 
 exports.getFollowers = catchAsync(async (req, res, next) => {
-  const followers = await User.findById(req.params.id).populate('followers');
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 10;
+  const skip = (page - 1) * limit;
+  const followers = await User.findById(req.params.id)
+    .skip(skip)
+    .limit(limit)
+    .populate('followers');
+
   res.status(200).json({
     status: 'success',
     data: {

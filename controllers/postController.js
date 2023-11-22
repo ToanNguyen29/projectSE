@@ -20,6 +20,28 @@ exports.setImage = (req, res, next) => {
   next();
 };
 
+exports.checkPostedBy = catchAsync(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
+  if (!post) {
+    return next(new appError('Do not exist this post', 404));
+  }
+  if (post.postedBy !== req.user._id) {
+    return next(
+      new appError('You do not have permission to manipulate that post', 403)
+    );
+  }
+  next();
+});
+
+exports.setReplyData = catchAsync(async (req, res, next) => {
+  const post = await Post.findById(req.params.id);
+  if (!post) {
+    return next(new appError('Do not exist this post', 404));
+  }
+  req.body.replyTo = req.params.id;
+  next();
+});
+
 exports.getAllPosts = factory.getAll(Post, { path: 'postedBy' });
 exports.getPost = factory.getOne(Post);
 exports.createPost = factory.createOne(Post);
@@ -55,7 +77,6 @@ exports.like = catchAsync(async (req, res, next) => {
 
 exports.checkLike = catchAsync(async (req, res, next) => {
   const postId = req.params.id;
-  const userId = req.user._id;
   const isLiked = req.user.likes && req.user.likes.includes(postId);
 
   res.status(200).json({
