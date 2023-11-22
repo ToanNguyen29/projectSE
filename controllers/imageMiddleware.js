@@ -3,6 +3,7 @@ const path = require('path');
 const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.svg']; // Add image extensions
 const videoExtensions = ['.mp4', '.mov', '.avi', '.mkv']; // Add video extensions
 const fs = require('fs');
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     try {
