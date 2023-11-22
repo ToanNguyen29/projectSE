@@ -3,6 +3,7 @@ const router = express.Router();
 const postController = require(`./../controllers/postController.js`);
 const authController = require('../controllers/authController.js');
 const imageMiddleware = require('./../controllers/imageMiddleware.js');
+const imageHandlerMiddleware = require('./../controllers/imageHandlerMiddleware.js');
 
 router
   .route('/')
@@ -11,6 +12,7 @@ router
     authController.protect,
     authController.restrictTo('user'),
     imageMiddleware.array('image', 5),
+    imageHandlerMiddleware.handleNudeImages,
     postController.setUser,
     postController.setImage,
     postController.createPost
@@ -23,6 +25,7 @@ router
   .patch(
     postController.checkPostedBy,
     imageMiddleware.array('image', 5),
+
     postController.setImage,
     postController.updatePost
   )

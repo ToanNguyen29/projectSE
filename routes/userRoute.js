@@ -2,6 +2,7 @@ const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('./../controllers/authController');
 const imageMiddleware = require('./../controllers/imageMiddleware.js');
+const imageHandlerMiddleware = require('./../controllers/imageHandlerMiddleware.js');
 
 const router = express.Router();
 
@@ -21,10 +22,18 @@ router.route('/:id/following').get(userController.getFollowing);
 router.route('/:id/followers').get(userController.getFollowers);
 router
   .route('/profilePicture')
-  .patch(imageMiddleware.single('profilePic'), userController.profilePic);
+  .patch(
+    imageMiddleware.single('profilePic'),
+    imageHandlerMiddleware.handleNudeImages,
+    userController.profilePic
+  );
 router
   .route('/coverPicture')
-  .patch(imageMiddleware.single('coverPhoto'), userController.coverPic);
+  .patch(
+    imageMiddleware.single('coverPhoto'),
+    imageHandlerMiddleware.handleNudeImages,
+    userController.coverPic
+  );
 
 router.use(authController.restrictTo('user'));
 router.route('/').get(userController.getAllUsers);
