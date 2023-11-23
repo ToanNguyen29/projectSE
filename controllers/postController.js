@@ -15,19 +15,11 @@ exports.setUser = (req, res, next) => {
 exports.setImage = (req, res, next) => {
   if (req.files) {
     const media = req.files.map((file) => ({ filename: file.filename }));
-    console.log('1');
-    console.log(req.files);
-    console.log(media);
     req.body.image = media;
   } else if (req.file) {
     const media = { filename: req.file.filename };
-    console.log('2');
-    console.log(req.file);
-    console.log(media);
     req.body.image = media;
   }
-
-  console.log(req.body.image);
 
   next();
 };

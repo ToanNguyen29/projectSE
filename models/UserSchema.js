@@ -67,13 +67,13 @@ const userSchema = new Schema(
     profilePic: {
       filename: {
         type: String,
-        default: '/uploads/1700042973733.png'
+        default: '1700656445602.png'
       }
     },
     coverPhoto: {
       filename: {
         type: String,
-        default: '/uploads/1700042973733.png'
+        default: '1700656445602.png'
       }
     },
     likes: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
