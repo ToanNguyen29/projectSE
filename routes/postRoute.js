@@ -25,7 +25,7 @@ router
   .patch(
     postController.checkPostedBy,
     imageMiddleware.array('image', 5),
-
+    imageHandlerMiddleware.handleNudeImages,
     postController.setImage,
     postController.updatePost
   )

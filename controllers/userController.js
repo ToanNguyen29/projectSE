@@ -96,9 +96,6 @@ exports.follow = catchAsync(async (req, res, next) => {
 });
 
 exports.getFollowing = catchAsync(async (req, res, next) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 10;
-  const skip = (page - 1) * limit;
   const following = await User.findById(req.params.id)
     .skip(skip)
     .limit(limit)
@@ -113,9 +110,6 @@ exports.getFollowing = catchAsync(async (req, res, next) => {
 });
 
 exports.getFollowers = catchAsync(async (req, res, next) => {
-  const page = req.query.page * 1 || 1;
-  const limit = req.query.limit * 1 || 10;
-  const skip = (page - 1) * limit;
   const followers = await User.findById(req.params.id)
     .skip(skip)
     .limit(limit)
@@ -170,6 +164,8 @@ exports.coverPic = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllUsers = factory.getAll(User);
-exports.getUser = factory.getOne(User);
+exports.getUser = factory.getOne(User, {
+  path: 'likes retweets'
+});
 exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);

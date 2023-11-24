@@ -11,7 +11,7 @@ router.route('/login').post(authController.login);
 router.route('/forgotPass').post(authController.forgotPass);
 router.route('/resetPassword/:token').patch(authController.resetPass);
 
-router.use(authController.protect);
+router.use(authController.protect, authController.restrictTo('user'));
 
 router.route('/me').get(userController.getMe, userController.getUser);
 router.route('/updateMe').patch(userController.updateMe);
@@ -35,12 +35,9 @@ router
     userController.coverPic
   );
 
-router.use(authController.restrictTo('user'));
 router.route('/').get(userController.getAllUsers);
-router
-  .route('/:id')
-  .get(userController.getUser)
-  .patch(userController.updateUser)
-  .delete(userController.deleteUser);
+router.route('/:id').get(userController.getUser);
+// .patch(userController.updateUser)
+// .delete(userController.deleteUser);
 
 module.exports = router;

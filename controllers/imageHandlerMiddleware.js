@@ -38,6 +38,5 @@ exports.handleNudeImages = catchAsync(async (req, res, next) => {
     }
   }
   console.log('111111111111111111111');
-  // Tất cả các hình ảnh đều thỏa mãn yêu cầu, chuyển sang middleware tiếp theo
   next();
 });
