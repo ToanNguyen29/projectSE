@@ -2,7 +2,6 @@ const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('./../controllers/authController');
 const imageMiddleware = require('./../controllers/imageMiddleware.js');
-const imageHandlerMiddleware = require('./../controllers/imageHandlerMiddleware.js');
 
 const router = express.Router();
 
@@ -13,6 +12,7 @@ router.route('/resetPassword/:token').patch(authController.resetPass);
 
 router.use(authController.protect, authController.restrictTo('user'));
 
+router.route('/logout').post(authController.logout);
 router.route('/me').get(userController.getMe, userController.getUser);
 router.route('/updateMe').patch(userController.updateMe);
 router.route('/deleteMe').delete(userController.deleteMe);
@@ -23,15 +23,15 @@ router.route('/:id/followers').get(userController.getFollowers);
 router
   .route('/profilePicture')
   .patch(
-    imageMiddleware.single('profilePic'),
-    imageHandlerMiddleware.handleNudeImages,
+    imageMiddleware.upload.single('profilePic'),
+    imageMiddleware.handleNudeImages,
     userController.profilePic
   );
 router
   .route('/coverPicture')
   .patch(
-    imageMiddleware.single('coverPhoto'),
-    imageHandlerMiddleware.handleNudeImages,
+    imageMiddleware.upload.single('coverPhoto'),
+    imageMiddleware.handleNudeImages,
     userController.coverPic
   );
 

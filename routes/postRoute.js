@@ -11,8 +11,8 @@ router
   .post(
     authController.protect,
     authController.restrictTo('user'),
-    imageMiddleware.array('image', 5),
-    imageHandlerMiddleware.handleNudeImages,
+    imageMiddleware.upload.array('image', 5),
+    imageMiddleware.handleNudeImages,
     postController.setUser,
     postController.setImage,
     postController.createPost
@@ -24,8 +24,8 @@ router
   .get(postController.getPost)
   .patch(
     postController.checkPostedBy,
-    imageMiddleware.array('image', 5),
-    imageHandlerMiddleware.handleNudeImages,
+    imageMiddleware.upload.array('image', 5),
+    imageMiddleware.handleNudeImages,
     postController.setImage,
     postController.updatePost
   )
