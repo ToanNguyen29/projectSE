@@ -103,7 +103,7 @@ userSchema.pre('save', function (next) {
 });
 
 userSchema.pre(/^find/, function (next) {
-  this.find({ actice: { $ne: false } });
+  this.find({ active: { $ne: false } });
   next();
 });
 
@@ -135,5 +135,5 @@ userSchema.methods.createPassResetToken = function () {
   return resetToken;
 };
 
-var User = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 module.exports = User;

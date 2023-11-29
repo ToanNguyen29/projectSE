@@ -6,7 +6,7 @@ class APIFeature {
   }
 
   filtering() {
-    const queryObj = { ...this.queryString }; // tạo ra bản sao của req.query
+    const queryObj = { ...this.queryString };
     const excludeFields = [
       'sort',
       'fields',
@@ -15,7 +15,7 @@ class APIFeature {
       'searchUser',
       'searchPost'
     ];
-    excludeFields.forEach((el) => delete queryObj[el]); // xóa các key có tên là sort, filter, page
+    excludeFields.forEach((el) => delete queryObj[el]);
 
     this.query = this.query.find(queryObj);
     return this;
@@ -43,7 +43,9 @@ class APIFeature {
       console.log(this.user._id);
 
       this.query.find(keyword).find({ _id: { $ne: this.user._id } });
-    } else if (this.queryString.searchPost) {
+    }
+
+    if (this.queryString.searchPost) {
       const keyword = this.queryString.searchPost
         ? {
             $or: [

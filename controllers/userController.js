@@ -97,9 +97,7 @@ exports.follow = catchAsync(async (req, res, next) => {
 
 exports.getFollowing = catchAsync(async (req, res, next) => {
   const following = await User.findById(req.params.id)
-    .skip(skip)
-    .limit(limit)
-    .populate('following');
+  .populate('following');
 
   res.status(200).json({
     status: 'success',
@@ -110,10 +108,7 @@ exports.getFollowing = catchAsync(async (req, res, next) => {
 });
 
 exports.getFollowers = catchAsync(async (req, res, next) => {
-  const followers = await User.findById(req.params.id)
-    .skip(skip)
-    .limit(limit)
-    .populate('followers');
+  const followers = await User.findById(req.params.id).populate('followers');
 
   res.status(200).json({
     status: 'success',
