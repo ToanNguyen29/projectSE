@@ -11,6 +11,7 @@ const postRoute = require(`./routes/postRoute`);
 const userRoute = require(`./routes/userRoute`);
 const chatRoute = require('./routes/chatRoute');
 const messageRoute = require('./routes/messageRoute');
+const notificationRoute = require('./routes/notificationRoute');
 
 const appError = require('./utils/appError');
 const errGlobalHandler = require('./controllers/errorController');
@@ -60,6 +61,7 @@ app.use('/api/v1/posts', postRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/chats', chatRoute);
 app.use('/api/v1/messages', messageRoute);
+app.use('/api/v1/notifications', notificationRoute);
 
 app.all('*', (req, res, next) => {
   next(new appError(`Can't find ${req.originalUrl} in the server`, 404));

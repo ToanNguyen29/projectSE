@@ -3,7 +3,7 @@ const router = express.Router();
 const postController = require(`./../controllers/postController.js`);
 const authController = require('../controllers/authController.js');
 const imageMiddleware = require('./../controllers/imageMiddleware.js');
-const imageHandlerMiddleware = require('./../controllers/imageHandlerMiddleware.js');
+const imageHandlerMiddleware = require('./../controllers/imageMiddleware.js');
 
 router
   .route('/')

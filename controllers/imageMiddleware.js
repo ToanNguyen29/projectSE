@@ -65,11 +65,11 @@ exports.handleNudeImages = catchAsync(async (req, res, next) => {
     if (response.data.message === 1) {
       continue;
     } else {
-      return res.status(200).json({
+      return res.status(400).json({
         message: 'Your photo does not meet community standards'
       });
     }
   }
-  console.log('111111111111111111111');
+
   next();
 });

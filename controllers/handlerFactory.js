@@ -1,6 +1,8 @@
 const catchAsync = require('./../utils/catchAsync');
 const appError = require('./../utils/appError');
 const APIFeature = require('./../utils/apiFeatures');
+const Post = require('../models/PostSchema');
+const Notification = require('../models/NotificationSchema');
 
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -33,7 +35,19 @@ exports.updateOne = (Model) =>
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
-    const newDoc = await Model.create(req.body);
+    let newDoc = await Model.create(req.body);
+
+    if (newDoc.replyTo && newDoc.replyTo != undefined) {
+      newDoc = await Post.populate(newDoc, { path: 'replyTo' });
+      console.log(req.user._id);
+      console.log(req.user);
+      await Notification.insertNotification(
+        newDoc.replyTo.postedBy,
+        req.user._id,
+        'reply',
+        newDoc._id
+      );
+    }
 
     res.status(200).json({
       status: 'success',

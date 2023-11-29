@@ -9,8 +9,9 @@ exports.setNotificationOfUser = (req, res, next) => {
 };
 
 exports.getAllNotification = factory.getAll(Notification, {
-  path: 'replyTo userFrom'
+  path: 'userTo userFrom'
 });
+
 exports.markAsAllOpened = catchAsync(async (req, res, next) => {
   const update = await Notification.updateMany(
     { userTo: req.user._id },
