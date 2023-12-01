@@ -3,7 +3,7 @@ const router = express.Router();
 const postController = require(`./../controllers/postController.js`);
 const authController = require('../controllers/authController.js');
 const imageMiddleware = require('./../controllers/imageMiddleware.js');
-const imageHandlerMiddleware = require('./../controllers/imageMiddleware.js');
+// const imageHandlerMiddleware = require('./../controllers/imageMiddleware.js');
 
 router
   .route('/')
@@ -17,6 +17,13 @@ router
     postController.setImage,
     postController.createPost
   );
+
+router
+  .route('/postOfMe')
+  .get(authController.protect, postController.setPostOfMe);
+router
+  .route('/replyOfMe')
+  .get(authController.protect, postController.setReplyOfMe);
 
 router.use(authController.protect, authController.restrictTo('user'));
 router
@@ -37,6 +44,7 @@ router
   .get(postController.checkLike);
 
 router.route('/:id/retweet').put(postController.retweet);
+
 router
   .route('/:id/reply')
   .put(

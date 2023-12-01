@@ -12,6 +12,32 @@ exports.setUser = (req, res, next) => {
   next();
 };
 
+exports.setPostOfMe = catchAsync(async (req, res, next) => {
+  const post = await Post.find({
+    postedBy: req.user._id,
+    replyTo: { $exists: false }
+  });
+
+  res.status(200).json({
+    status: 'success',
+    quantity: post.length,
+    data: { post }
+  });
+});
+
+exports.setReplyOfMe = catchAsync(async (req, res, next) => {
+  const post = await Post.find({
+    postedBy: req.user._id,
+    replyTo: { $exists: true }
+  });
+
+  res.status(200).json({
+    status: 'success',
+    quantity: post.length,
+    data: { post }
+  });
+});
+
 exports.setImage = (req, res, next) => {
   if (req.files) {
     const media = req.files.map((file) => ({ filename: file.filename }));
@@ -73,9 +99,12 @@ exports.like = catchAsync(async (req, res, next) => {
     { new: true }
   );
 
+  const check = !isLiked;
+
   res.status(200).json({
     status: 'success',
-    data: { post }
+    data: { post },
+    check: { check }
   });
 });
 
