@@ -96,8 +96,18 @@ exports.follow = catchAsync(async (req, res, next) => {
 });
 
 exports.getFollowing = catchAsync(async (req, res, next) => {
-  const following = await User.findById(req.params.id)
-  .populate('following');
+  const searchFollowing = req.query.searchFollowing;
+
+  let followingQuery = {};
+
+  if (searchFollowing) {
+    followingQuery = { name: { $regex: searchFollowing, $options: 'i' } };
+  }
+
+  const following = await User.findById(req.params.id).populate({
+    path: 'following',
+    match: followingQuery
+  });
 
   res.status(200).json({
     status: 'success',
@@ -108,7 +118,18 @@ exports.getFollowing = catchAsync(async (req, res, next) => {
 });
 
 exports.getFollowers = catchAsync(async (req, res, next) => {
-  const followers = await User.findById(req.params.id).populate('followers');
+  const searchFollower = req.query.searchFollower;
+
+  let followersQuery = {};
+
+  if (searchFollower) {
+    followersQuery = { name: { $regex: searchFollower, $options: 'i' } };
+  }
+
+  const followers = await User.findById(req.params.id).populate({
+    path: 'followers',
+    match: followersQuery
+  });
 
   res.status(200).json({
     status: 'success',

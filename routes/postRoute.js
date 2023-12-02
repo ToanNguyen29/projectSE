@@ -18,19 +18,16 @@ router
     postController.createPost
   );
 
-router
-  .route('/postOfMe')
-  .get(authController.protect, postController.setPostOfMe);
-router
-  .route('/replyOfMe')
-  .get(authController.protect, postController.setReplyOfMe);
-
 router.use(authController.protect, authController.restrictTo('user'));
+
+router.route('/postOfMe').get(postController.setPostOfMe);
+router.route('/replyOfMe').get(postController.setReplyOfMe);
+
 router
   .route('/:id')
   .get(postController.getPost)
   .patch(
-    postController.checkPostedBy,
+    // postController.checkPostedBy,
     imageMiddleware.upload.array('image', 5),
     imageMiddleware.handleNudeImages,
     postController.setImage,

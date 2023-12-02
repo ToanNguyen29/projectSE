@@ -11,7 +11,8 @@ const PostSchema = new Schema(
       {
         filename: {
           type: String,
-          require: true
+          require: true,
+          default: ''
         }
       }
     ],
