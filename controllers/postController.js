@@ -73,7 +73,7 @@ exports.setReplyData = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllPosts = factory.getAll(Post, { path: 'postedBy' });
-exports.getPost = factory.getOne(Post);
+exports.getPost = factory.getOne(Post, { path: 'postedBy' });
 exports.createPost = factory.createOne(Post);
 exports.updatePost = factory.updateOne(Post);
 exports.deletePost = factory.deleteOne(Post);
