@@ -5,20 +5,17 @@ const authController = require('../controllers/authController.js');
 const imageMiddleware = require('./../controllers/imageMiddleware.js');
 // const imageHandlerMiddleware = require('./../controllers/imageMiddleware.js');
 
+router.use(authController.protect, authController.restrictTo('user'));
 router
   .route('/')
   .get(postController.getAllPosts)
   .post(
-    authController.protect,
-    authController.restrictTo('user'),
     imageMiddleware.upload.array('image', 5),
     imageMiddleware.handleNudeImages,
     postController.setUser,
     postController.setImage,
     postController.createPost
   );
-
-router.use(authController.protect, authController.restrictTo('user'));
 
 router.route('/postOfMe').get(postController.setPostOfMe);
 router.route('/replyOfMe').get(postController.setReplyOfMe);
@@ -27,7 +24,7 @@ router
   .route('/:id')
   .get(postController.getPost)
   .patch(
-    // postController.checkPostedBy,
+    postController.checkPostedBy,
     imageMiddleware.upload.array('image', 5),
     imageMiddleware.handleNudeImages,
     postController.setImage,

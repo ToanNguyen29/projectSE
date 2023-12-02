@@ -13,10 +13,15 @@ exports.setUser = (req, res, next) => {
 };
 
 exports.setPostOfMe = catchAsync(async (req, res, next) => {
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 10;
+  const skip = (page - 1) * limit;
   const post = await Post.find({
     postedBy: req.user._id,
     replyTo: { $exists: false }
-  });
+  })
+    .limit(limit)
+    .skip(skip);
 
   res.status(200).json({
     status: 'success',
@@ -26,10 +31,15 @@ exports.setPostOfMe = catchAsync(async (req, res, next) => {
 });
 
 exports.setReplyOfMe = catchAsync(async (req, res, next) => {
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 10;
+  const skip = (page - 1) * limit;
   const post = await Post.find({
     postedBy: req.user._id,
     replyTo: { $exists: true }
-  });
+  })
+    .limit(limit)
+    .skip(skip);
 
   res.status(200).json({
     status: 'success',
@@ -55,7 +65,8 @@ exports.checkPostedBy = catchAsync(async (req, res, next) => {
   if (!post) {
     return next(new appError('Do not exist this post', 404));
   }
-  if (post.postedBy !== req.user._id) {
+
+  if (post.postedBy.toString() !== req.user._id.toString()) {
     return next(
       new appError('You do not have permission to manipulate that post', 403)
     );
