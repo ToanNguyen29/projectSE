@@ -101,7 +101,7 @@ exports.getFollowing = catchAsync(async (req, res, next) => {
   let followingQuery = {};
 
   if (searchFollowing) {
-    followingQuery = { name: { $regex: searchFollowing, $options: 'i' } };
+    followingQuery = { firstName: { $regex: searchFollowing, $options: 'i' } };
   }
 
   const following = await User.findById(req.params.id).populate({
@@ -123,7 +123,7 @@ exports.getFollowers = catchAsync(async (req, res, next) => {
   let followersQuery = {};
 
   if (searchFollower) {
-    followersQuery = { name: { $regex: searchFollower, $options: 'i' } };
+    followersQuery = { firstName: { $regex: searchFollower, $options: 'i' } };
   }
 
   const followers = await User.findById(req.params.id).populate({
