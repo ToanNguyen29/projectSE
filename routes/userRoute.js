@@ -17,7 +17,10 @@ router.route('/me').get(userController.getMe, userController.getUser);
 router.route('/updateMe').patch(userController.updateMe);
 router.route('/deleteMe').delete(userController.deleteMe);
 router.route('/updatePassword').patch(authController.updatePassword);
-router.route('/:id/follow').put(userController.follow);
+router
+  .route('/:id/follow')
+  .put(userController.follow)
+  .get(userController.checkFollow);
 router.route('/:id/following').get(userController.getFollowing);
 router.route('/:id/followers').get(userController.getFollowers);
 router

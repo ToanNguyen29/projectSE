@@ -37,7 +37,10 @@ router
   .put(postController.like)
   .get(postController.checkLike);
 
-router.route('/:id/retweet').put(postController.retweet);
+router
+  .route('/:id/retweet')
+  .put(postController.retweet)
+  .get(postController.checkRetweet);
 
 router
   .route('/:id/reply')

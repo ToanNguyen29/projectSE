@@ -66,6 +66,23 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.checkFollow = catchAsync(async (req, res, next) => {
+  const userId = req.params.id;
+  const user = await User.findById(userId);
+
+  if (user == null) {
+    return next(new appError('Do not exist user to follow', 404));
+  }
+
+  const isFollowing = user.followers && user.followers.includes(req.user._id);
+  res.status(200).json({
+    status: 'success',
+    data: {
+      isFollowing
+    }
+  });
+});
+
 exports.follow = catchAsync(async (req, res, next) => {
   const userId = req.params.id;
   const user = await User.findById(userId);

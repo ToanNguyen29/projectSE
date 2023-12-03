@@ -20,6 +20,7 @@ exports.setPostOfMe = catchAsync(async (req, res, next) => {
     postedBy: req.user._id,
     replyTo: { $exists: false }
   })
+    .populate('postedBy')
     .limit(limit)
     .skip(skip);
 
@@ -38,6 +39,7 @@ exports.setReplyOfMe = catchAsync(async (req, res, next) => {
     postedBy: req.user._id,
     replyTo: { $exists: true }
   })
+    .populate('postedBy')
     .limit(limit)
     .skip(skip);
 
@@ -84,7 +86,7 @@ exports.setReplyData = catchAsync(async (req, res, next) => {
 });
 
 exports.getAllPosts = factory.getAll(Post, { path: 'postedBy' });
-exports.getPost = factory.getOne(Post, { path: 'postedBy' });
+exports.getPost = factory.getOne(Post, { path: 'postedBy replyTo' });
 exports.createPost = factory.createOne(Post);
 exports.updatePost = factory.updateOne(Post);
 exports.deletePost = factory.deleteOne(Post);
@@ -126,6 +128,23 @@ exports.checkLike = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: { isLiked }
+  });
+});
+
+exports.checkRetweet = catchAsync(async (req, res, next) => {
+  const postId = req.params.id;
+  const userId = req.user._id;
+
+  const retweet = await Post.findOne({
+    postedBy: userId,
+    retweetData: postId
+  });
+
+  const isRetweet = retweet ? true : false;
+
+  res.status(200).json({
+    status: 'success',
+    data: { isRetweet }
   });
 });
 

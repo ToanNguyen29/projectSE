@@ -55,7 +55,7 @@ class APIFeature {
             ]
           }
         : {};
-      this.query.find(keyword).find({ postedBy: { $ne: this.user._id } });
+      this.query.find(keyword);
     }
     return this;
   }
