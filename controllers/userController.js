@@ -100,7 +100,7 @@ exports.follow = catchAsync(async (req, res, next) => {
     { new: true }
   );
 
-  User.findByIdAndUpdate(userId, {
+  await User.findByIdAndUpdate(userId, {
     [option]: { followers: req.user._id }
   });
 
