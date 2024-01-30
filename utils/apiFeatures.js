@@ -13,6 +13,7 @@ class APIFeature {
       'page',
       'limit',
       'searchUser',
+      'searchUserFollowers',
       'searchPost'
     ];
     excludeFields.forEach((el) => delete queryObj[el]);
@@ -36,6 +37,42 @@ class APIFeature {
                 lastName: { $regex: this.queryString.searchUser, $options: 'i' }
               },
               { email: { $regex: this.queryString.searchUser, $options: 'i' } }
+            ]
+          }
+        : {};
+
+      console.log(this.user._id);
+
+      this.query.find(keyword).find({ _id: { $ne: this.user._id } });
+    }
+
+    if (this.queryString.searchUserFollowing) {
+      const keyword = this.queryString.searchUserFollowing
+        ? {
+            $or: [
+              {
+                _id: { $in: this.user.following },
+                $or: [
+                  {
+                    firstName: {
+                      $regex: this.queryString.searchUserFollowing,
+                      $options: 'i'
+                    }
+                  },
+                  {
+                    lastName: {
+                      $regex: this.queryString.searchUserFollowing,
+                      $options: 'i'
+                    }
+                  },
+                  {
+                    email: {
+                      $regex: this.queryString.searchUserFollowing,
+                      $options: 'i'
+                    }
+                  }
+                ]
+              }
             ]
           }
         : {};

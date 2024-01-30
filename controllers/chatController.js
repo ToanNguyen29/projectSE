@@ -74,7 +74,9 @@ exports.createGroupChat = catchAsync(async (req, res, next) => {
   if (!req.body.users || !req.body.name) {
     return next(new appError('Please Fill all the feilds', 400));
   }
+  console.log('toan nguyen:');
   let users = JSON.parse(req.body.users);
+  console.log('toan nguyen:', users);
   if (users.length < 2) {
     return next(
       new appError('More than 2 users are required to form a group chat', 400)

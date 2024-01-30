@@ -112,6 +112,35 @@ exports.follow = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.block = catchAsync(async (req, res, next) => {
+  const userId = req.params.id;
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return next(new appError('Do not exist user to follow', 404));
+  }
+
+  const isBlocking = user.blockers && user.blockers.includes(req.user._id);
+  const option = isBlocking ? '$pull' : '$addToSet';
+
+  const userUpdate = await User.findByIdAndUpdate(
+    req.user._id,
+    { [option]: { blocking: userId } },
+    { new: true }
+  );
+
+  await User.findByIdAndUpdate(userId, {
+    [option]: { blockers: req.user._id }
+  });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      userUpdate
+    }
+  });
+});
+
 exports.getFollowing = catchAsync(async (req, res, next) => {
   const searchFollowing = req.query.searchFollowing;
 

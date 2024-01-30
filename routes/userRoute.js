@@ -21,6 +21,7 @@ router
   .route('/:id/follow')
   .put(userController.follow)
   .get(userController.checkFollow);
+router.route('/:id/block').patch(userController.block);
 router.route('/:id/following').get(userController.getFollowing);
 router.route('/:id/followers').get(userController.getFollowers);
 router
@@ -37,7 +38,6 @@ router
     imageMiddleware.handleNudeImages,
     userController.coverPic
   );
-
 router.route('/').get(userController.getAllUsers);
 router.route('/:id').get(userController.getUser);
 // .patch(userController.updateUser)

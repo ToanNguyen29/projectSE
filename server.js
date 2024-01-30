@@ -36,17 +36,23 @@ io.on('connection', (socket) => {
   socket.on('setup', (userData) => {
     socket.join(userData._id);
     socket.emit('connected');
+    console.log('setup socket.io');
   });
 
   socket.on('join chat', (room) => {
     socket.join(room);
     console.log('User Joined Room: ' + room);
   });
-  socket.on('typing', (room) => socket.in(room).emit('typing'));
+  socket.on('typing', (room) => {
+    socket.in(room);
+    socket.emit('typing');
+    console.log('typing socket.io');
+  });
   socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
 
   socket.on('new message', (newMessageRecieved) => {
     var chat = newMessageRecieved.chat;
+    console.log(chat);
 
     if (!chat.users) return console.log('chat.users not defined');
 

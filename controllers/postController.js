@@ -85,6 +85,26 @@ exports.setReplyData = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.getAllPostFollowing = catchAsync(async (req, res, next) => {
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 200;
+  const skip = (page - 1) * limit;
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    return next(new appError('Do not exist this user', 404));
+  }
+
+  const posts = await Post.find({ postedBy: { $in: user.following } })
+    .sort('-createdAt')
+    .limit(limit)
+    .skip(skip);
+  res.status(200).json({
+    status: 'success',
+    quantity: posts.length,
+    data: { posts }
+  });
+});
+
 exports.getAllPosts = factory.getAll(Post, { path: 'postedBy' });
 exports.getPost = factory.getOne(Post, { path: 'postedBy replyTo' });
 exports.createPost = factory.createOne(Post);

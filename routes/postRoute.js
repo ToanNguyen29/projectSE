@@ -17,6 +17,7 @@ router
     postController.createPost
   );
 
+router.route('/postOfFollowing').get(postController.getAllPostFollowing);
 router.route('/postOfMe').get(postController.setPostOfMe);
 router.route('/replyOfMe').get(postController.setReplyOfMe);
 

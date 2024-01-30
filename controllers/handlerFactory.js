@@ -78,13 +78,9 @@ exports.getAll = (Model, popOptions) =>
     let feature = new APIFeature(Model.find(), req.query, req.user)
       .filtering()
       .sorting()
+      .searching()
       .limiting()
       .pagination();
-
-    console.log('toan', !req.query.searchPost && !req.query.searchUser);
-    if (req.query.searchPost || req.query.searchUser) {
-      feature = feature.searching();
-    }
 
     let doc;
     if (popOptions) {

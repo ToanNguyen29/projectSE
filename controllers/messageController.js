@@ -24,11 +24,41 @@ exports.allMessages = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.sendMessage = catchAsync(async (req, res) => {
+exports.sendMessage = catchAsync(async (req, res, next) => {
   const { content, chatId } = req.body;
 
   if (!content || !chatId) {
     return next(new appError('Invalid data passed into request', 404));
+  }
+
+  const chat = await Chat.findById(chatId).populate('users');
+
+  if (!chat) {
+    return next(new appError('Do not exist this chat', 404));
+  }
+
+  for (const userId of chat.users) {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return next(new appError('Do not exist this user', 404));
+    }
+
+    if (
+      user.blocking.includes(req.user._id) &&
+      user._id.toString() !== req.user._id
+    ) {
+      return next(new appError('mầy bị block ròi thằng ngu', 404));
+    }
+
+    if (
+      user.blockers.includes(req.user._id) &&
+      user._id.toString() !== req.user._id
+    ) {
+      return next(
+        new appError('mầy block người ta rồi mà nhắn tin để làm gì?', 404)
+      );
+    }
   }
 
   let newMessage = {
@@ -39,7 +69,9 @@ exports.sendMessage = catchAsync(async (req, res) => {
 
   let message = await Message.create(newMessage);
 
-  message = await message.populate('sender', 'name profilePic').execPopulate();
+  message = await message
+    .populate('sender', 'firstName lastName profilePic')
+    .execPopulate();
   message = await message.populate('chat').execPopulate();
   message = await User.populate(message, {
     path: 'chat.users',
